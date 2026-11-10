@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Votações de Reality</title>
+<style>
+:root{
+  --bg:#0a0d15;--card:#121725;--card2:#171d2e;--line:#293149;
+  --text:#f4f5fa;--muted:#a9afc2;--accent:#b56cff;--accent2:#ff4fa3;
+  --danger:#ef476f;--ok:#43d69a;--warn:#ffca57;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 20% 0,#211b3c 0,#0a0d15 38%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:980px;margin:auto;padding:22px 16px 70px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.brand h1{font-size:26px;margin:0}.brand p{margin:5px 0 0;color:var(--muted)}
+.iconbtn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:13px;padding:10px 13px}
+.view{display:none}.view.active{display:block}
+.card{background:linear-gradient(180deg,#141a29,#101521);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 18px 55px #0004;margin-bottom:18px}
+.hero{text-align:center;padding:48px 24px}
+.hero h2{font-size:38px;margin:0 0 10px}.hero p{color:var(--muted);max-width:560px;margin:0 auto 25px;line-height:1.6}
+.homeGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:720px;margin:auto}
+.bigBtn{min-height:150px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:22px;padding:22px;text-align:left}
+.bigBtn strong{display:block;font-size:21px;margin-bottom:8px}.bigBtn span{color:var(--muted)}
+.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:0;color:white}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.btn{border:1px solid var(--line);background:#20273c;color:var(--text);padding:11px 15px;border-radius:13px}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:0}
+.btn.danger{background:#4d1d2b;border-color:#713044}.btn.ok{background:#143c30;border-color:#24694f}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.sectionTitle h2{margin:0;font-size:24px}
+label.label{display:block;color:var(--muted);font-size:13px;margin:14px 0 7px}
+input,select{width:100%;background:#0d121d;color:var(--text);border:1px solid var(--line);border-radius:13px;padding:13px;outline:none}
+input:focus,select:focus{border-color:#9b72ff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.switchline{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#0d121d;border:1px solid var(--line);border-radius:15px;padding:13px;margin-top:12px}
+.sub{font-size:12px;color:var(--muted);margin-top:3px}.switch{width:48px;height:27px;border:0;border-radius:20px;background:#343b50;padding:3px}.switch i{display:block;width:21px;height:21px;border-radius:50%;background:white;transition:.2s}.switch.on{background:#8b5cf6}.switch.on i{transform:translateX(21px)}
+.hidden{display:none!important}
+.notice{background:#19162b;border:1px solid #302b4b;color:#c7c3dc;border-radius:15px;padding:13px;line-height:1.45;margin-top:13px}
+.person,.pollItem,.result{display:flex;align-items:center;gap:13px;border:1px solid var(--line);background:#0e131f;border-radius:18px;padding:12px;margin-top:10px}
+.avatar{width:58px;height:58px;border-radius:50%;overflow:hidden;background:#293047;display:grid;place-items:center;flex:none;font-size:25px}
+.avatar img,.photoFrame img{width:100%;height:100%;object-fit:cover}
+.person .info,.pollItem .info{flex:1;min-width:0}.name{font-weight:800;font-size:17px}.x{background:#512031;color:white;border:1px solid #783049;border-radius:12px;width:45px;height:45px;font-size:24px}
+.fileRow{display:grid;grid-template-columns:1fr auto;gap:10px}
+.cropBox{display:grid;grid-template-columns:76px 1fr;gap:10px;margin-top:10px;padding:9px;background:#0a0e17;border:1px solid var(--line);border-radius:13px}
+.cropPreview{width:76px;height:76px;border-radius:50%;overflow:hidden;background:#242b40;display:grid;place-items:center;font-size:26px}
+.cropPreview img{width:100%;height:100%;object-fit:cover}
+.cropGesture{width:112px;height:112px;border-radius:50%;overflow:hidden;position:relative;touch-action:none;cursor:grab;border:2px solid #9b72ff;box-shadow:0 0 0 4px #9b72ff22;user-select:none}.cropGesture:active{cursor:grabbing}.cropGesture img{width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
+.cropControls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cropControls label{font-size:10px;color:var(--muted)}.cropControls input{padding:0;height:28px}
+.bgEditor{margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#0d121d}.bgEditor h3{font-size:15px;margin:0 0 8px}.bgPreview{position:relative;min-height:125px;max-height:180px;overflow:hidden;border-radius:12px;background:linear-gradient(135deg,#252b40,#101521);margin-top:10px;display:grid;place-items:center;color:#c5cad8}.bgPreview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.bgPreview span{position:relative;z-index:1;text-shadow:0 1px 4px #000}.bgEditorControls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:10px}.bgEditorControls label{font-size:11px;color:var(--muted)}.bgEditorControls input{padding:0;height:25px;margin-top:6px}.bgFileRow{display:grid;grid-template-columns:1fr auto;gap:8px}.bgFileRow input{min-width:0}@media(max-width:650px){.bgEditorControls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.colorRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.colorPick{display:flex;align-items:center;gap:10px;background:#0d121d;border:1px solid var(--line);border-radius:14px;padding:9px}.colorPick input{width:48px;height:38px;padding:2px;border:0;background:transparent}
+.pollItem{padding:15px}.pollItem .meta{color:var(--muted);font-size:12px;margin-top:4px}.pill{padding:7px 10px;border-radius:999px;background:#20263a;color:#c9cee0;font-size:12px;white-space:nowrap}.pill.live{background:#143b30;color:#69e2ae}.pill.closed{background:#3b2029;color:#ff9ab4}
+.pollActions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:14px}.tab{border:1px solid var(--line);background:#111625;color:var(--muted);border-radius:12px;padding:9px 12px;white-space:nowrap}.tab.active{background:#28213e;color:white;border-color:#6f55aa}
+.statGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#0d121d;border:1px solid var(--line);border-radius:16px;padding:13px}.stat b{font-size:20px;display:block;margin-top:4px}
+.result{position:relative;overflow:hidden}.rank{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#252b3d}.resultImg{width:66px;height:66px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#252b3d;flex:none}.resultImg img{width:100%;height:100%;object-fit:cover}.bar{height:9px;background:#282f44;border-radius:10px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px}.result .info{flex:1}.percent{font-size:20px;font-weight:900}
+.publicVote{max-width:700px;margin:40px auto}.publicVote h1{text-align:center}.voteChoice{width:100%;display:flex;align-items:center;gap:13px;padding:14px;background:#101622;color:white;border:1px solid var(--line);border-radius:17px;margin-top:10px;text-align:left}.voteChoice.selected{border-color:#b56cff;box-shadow:0 0 0 2px #b56cff33}.voteChoice img{width:58px;height:58px;border-radius:50%;object-fit:cover}
+.canvasWrap{background:#05070b;border:1px solid var(--line);border-radius:18px;padding:12px;overflow:auto}.canvasWrap canvas{width:100%;max-width:720px;display:block;margin:auto;border-radius:12px;background:white}
+.videoStatus{color:var(--muted);margin-top:10px}.download{display:block;text-align:center;text-decoration:none}
+.empty{text-align:center;color:var(--muted);padding:35px 10px}
+.footer{text-align:center;color:#70768a;font-size:12px;margin-top:30px}
+@media(max-width:650px){.app{padding:15px 11px 50px}.hero h2{font-size:29px}.homeGrid,.grid2,.grid3,.colorRow,.statGrid{grid-template-columns:1fr}.card{padding:16px;border-radius:19px}.cropBox{grid-template-columns:64px 1fr}.cropPreview{width:64px;height:64px}.pollItem{align-items:flex-start}.pollItem .pill{margin-left:auto}}
+.personActions{display:flex;align-items:center;gap:8px;flex:none}.editPerson{max-width:180px;font-size:12px}.editPerson summary{cursor:pointer;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#20273c}.editPerson input{width:100%;box-sizing:border-box;margin:5px 0 9px;padding:8px}
+</style>
+</head>
+<body>
+<div class="app">
+<header id="topBar" class="top">
+  <div class="brand"><h1>🎬 Votações de Reality</h1><p>Área do criador</p></div>
+  <button class="iconbtn" onclick="goHome()">⌂ Início</button>
+</header>
+
+<section id="homeView" class="view active">
+  <div class="card hero">
+    <h2>Central do Reality</h2>
+    <p>Crie votações, personalize cada paredão, acompanhe os votos e prepare a animação do resultado.</p>
+    <div class="notice" style="margin:0 auto 16px;max-width:720px">💡 <b>Área do criador:</b> aqui você monta a votação e gera os vídeos. O link compartilhado com o público abre somente a tela de votação.</div><div class="homeGrid">
+      <button class="bigBtn primary" onclick="newPoll()"><strong>＋ Criar votação</strong><span>Monte um novo paredão e configure as regras.</span></button>
+      <button class="bigBtn" onclick="show('listView');renderPollList()"><strong>📁 Votações já criadas</strong><span>Abra, acompanhe, encerre ou exclua suas votações.</span></button>
+    </div>
+  </div>
+</section>
+
+<section id="listView" class="view">
+ <div class="card">
+  <div class="sectionTitle"><h2>📁 Votações já criadas</h2><button class="btn primary" onclick="newPoll()">＋ Nova</button></div>
+  <div id="pollList"></div>
+ </div>
+</section>
+
+<section id="createView" class="view">
+ <div class="card">
+  <div class="sectionTitle"><h2>➕ Criar votação</h2><button class="btn" onclick="goHome()">Voltar</button></div>
+  <label class="label">Nome da votação</label><input id="pollTitle" placeholder="Ex.: Eliminação — Episódio 01">
+  <div class="grid2">
+   <div><label class="label">Nome do reality (aparece no topo e nos vídeos)</label><input id="brandName" placeholder="Ex.: Ilha dos Famosos"></div>
+   <div><label class="label">Descrição (opcional)</label><input id="pollDescription" placeholder="Ex.: Vote em quem deve ser eliminado!"></div>
+  </div>
+  <div class="notice">💡 O nome do reality aparece no topo dos vídeos. A descrição é opcional e aparece para quem vai votar.</div>
+  <div class="grid2">
+   <div><label class="label">Tipo de votação</label><select id="direction"><option value="stay">💚 Voto para ficar</option><option value="eliminate">🚨 Voto para eliminar</option></select></div>
+   <div><label class="label">Quantidade de eliminados</label><input id="elimCount" type="number" min="1" value="1"></div>
+  </div>
+
+  <label class="label">Modo de votos</label>
+  <select id="source" onchange="sourceChanged()">
+    <option value="public">👥 Votos do público</option>
+    <option value="ghost">👻 Votos fantasmas</option>
+  </select>
+
+  <div id="publicSettings">
+   <div class="grid2">
+    <div><label class="label">Tipo de voto público</label><select id="rule"><option value="unique">Voto único — uma vez</option><option value="torcida">Voto torcida — várias vezes</option></select></div>
+    <div><label class="label">Peso de cada voto</label><input id="weight" type="number" min="1" value="1"></div>
+   </div>
+   <div class="switchline"><div><b>Habilitar público junto com fantasmas</b><div class="sub">Só tem efeito quando o modo fantasma estiver selecionado.</div></div><button id="publicSwitch" class="switch" onclick="togglePublic()"><i></i></button></div>
+   <label class="label">Prazo da votação (opcional)</label><input id="deadline" type="datetime-local">
+  </div>
+
+  <div id="ghostSettings" class="hidden">
+   <div class="grid2">
+    <div><label class="label">Quantidade de votos fantasmas</label><input id="ghostTotal" type="number" min="1" value="1000"></div>
+    <div><label class="label">Variação / rejeição (%)</label><input id="ghostVariation" type="number" min="0" max="100" value="12"></div>
+   </div>
+   <div class="switchline"><div><b>Aleatorizar o total de votos</b><div class="sub">O total sorteia um valor entre mínimo e máximo.</div></div><button id="ghostRandomSwitch" class="switch" onclick="toggleGhostRandom()"><i></i></button></div>
+   <div id="ghostRandomSettings" class="grid2 hidden">
+     <div><label class="label">Mínimo</label><input id="ghostMin" type="number" min="1" value="500"></div>
+     <div><label class="label">Máximo</label><input id="ghostMax" type="number" min="1" value="5000"></div>
+   </div>
+   <div class="switchline"><div><b>Permitir votos do público também</b><div class="sub">Fantasma continua existindo e o público pode participar pelo link.</div></div><button id="ghostPublicSwitch" class="switch" onclick="toggleGhostPublic()"><i></i></button></div>
+  </div>
+
+  <label class="label">Cores da animação</label>
+  <div class="colorRow">
+   <div class="colorPick"><input id="outColor" type="color" value="#ef476f"><div><b>Quem sair</b><div class="sub">cor do eliminado</div></div></div>
+   <div class="colorPick"><input id="stayColor" type="color" value="#43d69a"><div><b>Quem ficar</b><div class="sub">cor dos que ficam</div></div></div>
+  </div>
+  <div class="notice">🖼️ Personalize cada fundo: escolha a foto, mova o enquadramento, ajuste o zoom e controle a opacidade. A prévia muda enquanto você ajusta.</div>
+  <div class="bgEditor"><h3>🎬 Fundo da animação de eliminação</h3><div class="bgFileRow"><input id="bgFile" type="file" accept="image/*" onchange="readBackground(this)"><button class="btn" onclick="clearBackground()">Limpar</button></div><div class="bgPreview" id="bgPreview"><span>Prévia do fundo de eliminação</span></div><div class="bgEditorControls"><label>Posição X<input id="bgX" type="range" min="0" max="100" value="50" oninput="setBgSetting('bg','x',this.value)"></label><label>Posição Y<input id="bgY" type="range" min="0" max="100" value="50" oninput="setBgSetting('bg','y',this.value)"></label><label>Zoom<input id="bgZoom" type="range" min="100" max="250" value="100" oninput="setBgSetting('bg','zoom',this.value/100)"></label><label>Opacidade<input id="bgOpacity" type="range" min="0" max="100" value="100" oninput="setBgSetting('bg','opacity',this.value/100)"></label></div></div>
+  <div class="bgEditor"><h3>📊 Fundo do vídeo da parcial</h3><div class="bgFileRow"><input id="partialBgFile" type="file" accept="image/*" onchange="readCustomBackground(this,'partialBg')"><button class="btn" onclick="clearCustomBackground('partialBg')">Limpar</button></div><div class="bgPreview" id="partialBgPreview"><span>Prévia do fundo da parcial</span></div><div class="bgEditorControls"><label>Posição X<input id="partialBgX" type="range" min="0" max="100" value="50" oninput="setBgSetting('partialBg','x',this.value)"></label><label>Posição Y<input id="partialBgY" type="range" min="0" max="100" value="50" oninput="setBgSetting('partialBg','y',this.value)"></label><label>Zoom<input id="partialBgZoom" type="range" min="100" max="250" value="100" oninput="setBgSetting('partialBg','zoom',this.value/100)"></label><label>Opacidade<input id="partialBgOpacity" type="range" min="0" max="100" value="100" oninput="setBgSetting('partialBg','opacity',this.value/100)"></label></div></div>
+  <div class="bgEditor"><h3>🗳️ Fundo da tela de votação</h3><div class="bgFileRow"><input id="voteBgFile" type="file" accept="image/*" onchange="readCustomBackground(this,'voteBg')"><button class="btn" onclick="clearCustomBackground('voteBg')">Limpar</button></div><div class="bgPreview" id="voteBgPreview"><span>Prévia da tela de votação</span></div><div class="bgEditorControls"><label>Posição X<input id="voteBgX" type="range" min="0" max="100" value="50" oninput="setBgSetting('voteBg','x',this.value)"></label><label>Posição Y<input id="voteBgY" type="range" min="0" max="100" value="50" oninput="setBgSetting('voteBg','y',this.value)"></label><label>Zoom<input id="voteBgZoom" type="range" min="100" max="250" value="100" oninput="setBgSetting('voteBg','zoom',this.value/100)"></label><label>Opacidade<input id="voteBgOpacity" type="range" min="0" max="100" value="100" oninput="setBgSetting('voteBg','opacity',this.value/100)"></label></div><label class="label">Cor de base da tela</label><input id="voteBgColor" type="color" value="#0a0d15" style="height:42px;padding:4px"></div>
+  <label class="label">Mensagem personalizada após votar (voto único)</label><input id="uniqueMessage" maxlength="240" placeholder="Ex.: Seu voto foi computado. Obrigado por participar!">
+
+  <div class="card" style="margin:18px 0 0;padding:15px;background:#0d121d">
+   <div class="sectionTitle"><h2 style="font-size:19px">👤 Participantes</h2><span class="pill">Sem limite fixo</span></div>
+   <div class="grid2">
+    <div><label class="label">Nome</label><input id="personName" placeholder="Nome do participante"></div>
+    <div><label class="label">Foto</label><input id="photoFile" type="file" accept="image/*" onchange="readPhoto(this)"></div>
+   </div>
+   <div id="photoEditor" class="hidden"></div>
+   <div class="actions"><button class="btn primary" onclick="addPerson()">＋ Adicionar participante</button></div>
+   <div id="people"></div>
+  </div>
+
+  <div id="oddsSection" class="hidden">
+    <label class="label">Chance/peso dos votos fantasmas</label><div id="odds"></div>
+  </div>
+
+  <div class="actions"><button class="btn primary" onclick="createPoll()">Criar votação</button><button class="btn" onclick="goHome()">Cancelar</button></div>
+ </div>
+</section>
+
+<section id="manageView" class="view">
+ <div id="manageContent"></div>
+</section>
+
+<section id="publicView" class="view">
+ <div id="publicContent" class="publicVote"></div>
+</section>
+
+<section id="videoView" class="view">
+ <div class="card">
+  <div class="sectionTitle"><h2>🎬 Gerar vídeo</h2><button class="btn" onclick="backToManage()">Voltar</button></div>
+  <div class="canvasWrap"><canvas id="videoCanvas" width="720" height="800"></canvas></div>
+  <div id="videoStatus" class="videoStatus">Preparando...</div>
+  <a id="videoDownload" class="btn primary download hidden" href="#">⬇ Baixar vídeo</a>
+ </div>
+</section>
+
+
+<div id="cloudSetup" class="card hidden" style="margin-top:18px">
+  <div class="sectionTitle">
+    <h2>☁️ Votação online</h2>
+    <span class="pill">Firebase</span>
+  </div>
+  <div class="notice">
+    Para que pessoas em celulares diferentes votem na mesma votação, este sistema precisa de um banco online.
+    Configure o Firebase uma única vez no bloco <b>FIREBASE_CONFIG</b> dentro deste arquivo.
+  </div>
+</div>
+
+<footer class="footer">Votações de Reality • <span id="cloudStatus">modo local</span></footer>
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBYLyvwUBKdD2yubykYzQ1w1oVTFveAJMU",
+  authDomain: "reality-gacha-votacao-acb28.firebaseapp.com",
+  projectId: "reality-gacha-votacao-acb28",
+  storageBucket: "reality-gacha-votacao-acb28.firebasestorage.app",
+  messagingSenderId: "304393731037",
+  appId: "1:304393731037:web:f36aa225701281402d5434"
+};
+
+let cloudReady = false, cloudDb = null, cloudUser = null;
+
+async function initCloud(){
+  if(FIREBASE_CONFIG.apiKey.startsWith("COLE_") || FIREBASE_CONFIG.projectId.startsWith("SEU_")){
+    return false;
+  }
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    await firebase.auth().signInAnonymously();
+    cloudUser = firebase.auth().currentUser;
+    cloudDb = firebase.firestore();
+    cloudReady = true;
+    setTimeout(()=>{let s=document.getElementById("cloudStatus");if(s)s.textContent="☁️ votação online ativa";},0);
+    return true;
+  }catch(e){
+    console.error("Firebase:", e);
+    const status=document.getElementById("cloudStatus");
+    if(status) status.textContent="nuvem indisponível • "+(e.code||e.message||"erro de conexão");
+    window.lastCloudError=e;
+    return false;
+  }
+}
+
+function explainCloudError(e){
+  const code=String(e?.code||"");
+  const msg=String(e?.message||"");
+  if(code.includes("auth/operation-not-allowed"))
+    return "O Firebase está com o login anônimo desativado. No Firebase Console, ative Authentication > Sign-in method > Anonymous.";
+  if(code.includes("auth/unauthorized-domain"))
+    return "O endereço do GitHub Pages não está autorizado no Firebase. Adicione arthur302023-beep.github.io em Authentication > Settings > Authorized domains.";
+  if(code.includes("permission-denied")||code.includes("firestore/permission-denied"))
+    return "O Firestore recusou o acesso. É necessário ajustar as regras do banco para permitir leitura pública da votação e gravação de votos, mantendo a criação/edição protegida.";
+  if(code.includes("resource-exhausted")||/maximum.*size|1\s*MiB|document.*too large/i.test(msg))
+    return "A votação ficou grande demais para um único documento do Firestore (limite de 1 MiB). As fotos precisam ser armazenadas separadamente ou reduzidas.";
+  if(code.includes("unavailable")||code.includes("network"))
+    return "Não foi possível alcançar o Firebase. Confira a internet e tente novamente.";
+  return "Detalhe do Firebase: "+(code||msg||"erro não identificado");
+}
+
+function cloudPollRef(id){ return cloudDb.collection("polls").doc(id); }
+
+async function cloudSavePoll(p){
+  if(!cloudReady) return;
+  const clean = JSON.parse(JSON.stringify(p));
+  await cloudPollRef(p.id).set(clean, {merge:true});
+}
+
+async function cloudLoadPoll(id){
+  if(!cloudReady) return null;
+  const s = await cloudPollRef(id).get();
+  return s.exists ? s.data() : null;
+}
+
+async function cloudLoadAll(){
+  if(!cloudReady) return [];
+  const snap = await cloudDb.collection("polls").orderBy("created","desc").get();
+  return snap.docs.map(d=>d.data());
+}
+
+async function cloudAddPublicVote(id, personId, amount){
+  if(!cloudReady) return;
+  const ref = cloudPollRef(id);
+  await cloudDb.runTransaction(async tx=>{
+    const s = await tx.get(ref);
+    if(!s.exists) throw new Error("Votação não encontrada.");
+    const p = s.data();
+    if(!p.active) throw new Error("Votação encerrada.");
+    const people = p.people || [];
+    const x = people.find(a=>a.id===personId);
+    if(!x) throw new Error("Participante não encontrado.");
+    x.votes = (Number(x.votes)||0) + amount;
+    p.publicVoters = (Number(p.publicVoters)||0) + 1;
+    tx.set(ref,{people,publicVoters:p.publicVoters},{merge:true});
+  });
+}
+
+async function cloudAddGhostVotes(id, personId, amount){
+  if(!cloudReady) return;
+  const ref = cloudPollRef(id);
+  await cloudDb.runTransaction(async tx=>{
+    const s = await tx.get(ref);
+    if(!s.exists) throw new Error("Votação não encontrada.");
+    const p = s.data();
+    const people = p.people || [];
+    const x = people.find(a=>a.id===personId);
+    if(!x) throw new Error("Participante não encontrado.");
+    const added = Math.max(0,Math.floor(Number(amount)||0));
+    x.votes = Math.max(0,(Number(x.votes)||0) + added);
+    x.ghostVotes = Math.max(0,Number(x.ghostVotes)||0) + added;
+    p.ghostAdded = (Number(p.ghostAdded)||0) + added;
+    tx.set(ref,{people,ghostAdded:p.ghostAdded},{merge:true});
+  });
+}
+
+async function cloudRemoveGhostVotes(id, personId, amount){
+  if(!cloudReady) return 0;
+  const ref=cloudPollRef(id); let removed=0;
+  await cloudDb.runTransaction(async tx=>{
+    const s=await tx.get(ref); if(!s.exists) throw new Error('Votação não encontrada.');
+    const p=s.data(), people=p.people||[], x=people.find(a=>a.id===personId);
+    if(!x) throw new Error('Participante não encontrado.');
+    removed=Math.min(Math.max(0,Math.floor(Number(amount)||0)),Math.max(0,Number(x.ghostVotes)||0));
+    x.ghostVotes=Math.max(0,(Number(x.ghostVotes)||0)-removed);
+    x.votes=Math.max(0,(Number(x.votes)||0)-removed);
+    p.ghostAdded=Math.max(0,(Number(p.ghostAdded)||0)-removed);
+    tx.set(ref,{people,ghostAdded:p.ghostAdded},{merge:true});
+  });
+  return removed;
+}
+
+async function cloudRemoveAllGhostVotes(id){
+  if(!cloudReady) return 0;
+  const ref=cloudPollRef(id); let removed=0;
+  await cloudDb.runTransaction(async tx=>{
+    const s=await tx.get(ref); if(!s.exists) throw new Error('Votação não encontrada.');
+    const p=s.data(), people=p.people||[];
+    people.forEach(x=>{
+      const n=Math.max(0,Math.floor(Number(x.ghostVotes)||0));
+      removed+=n;
+      x.votes=Math.max(0,(Number(x.votes)||0)-n);
+      x.ghostVotes=0;
+    });
+    tx.set(ref,{people,ghostAdded:0},{merge:true});
+  });
+  return removed;
+}
+</script>
+
+<script>
+const KEY='reality_gacha_votacoes_v7';
+let db=loadDB(), draft={people:[],photo:'',photoCrop:{cropX:50,cropY:50,zoom:1},bg:'',partialBg:{image:'',x:50,y:50,zoom:1,opacity:1},voteBg:{image:'',x:50,y:50,zoom:1,opacity:1},bgSettings:{x:50,y:50,zoom:1,opacity:1},ghostRandom:false,ghostPublic:false};
+let currentId=null, publicChoice=null, selectedTab='partial', editPollId=null, creatingPoll=false;
+
+function $(id){return document.getElementById(id)}
+function loadDB(){
+ try{
+  const data=JSON.parse(localStorage.getItem(KEY))||{polls:[]};
+  if(!Array.isArray(data.polls))data.polls=[];
+  const seen=new Set();
+  data.polls.forEach(p=>{
+   if(!p.id||seen.has(String(p.id)))p.id=makeId('v');
+   seen.add(String(p.id));
+  });
+  return data;
+ }catch(e){return {polls:[]}}
+}
+function saveDB(){
+ const serialized=JSON.stringify(db);
+ try{localStorage.setItem(KEY,serialized);return true}
+ catch(error){
+  if(error?.name==='QuotaExceededError'||error?.name==='NS_ERROR_DOM_QUOTA_REACHED'){
+   alert('O armazenamento deste navegador está cheio. As fotos não serão apagadas automaticamente. Libere espaço no navegador ou use a sincronização na nuvem para salvar esta alteração.');
+   return false;
+  }
+  throw error;
+ }
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function fmt(n){return Math.floor(Number(n)||0).toLocaleString('pt-BR')}
+function fmtVideo(n){
+ const v=Math.max(0,Number(n)||0);
+ if(v>=1e12)return Number((v/1e12).toFixed(2)).toString().replace('.',',')+' tri';
+ if(v>=1e9)return Number((v/1e9).toFixed(2)).toString().replace('.',',')+' bi';
+ if(v>=1e6)return Number((v/1e6).toFixed(2)).toString().replace('.',',')+' mi';
+ if(v>=1e3)return Number((v/1e3).toFixed(1)).toString().replace('.',',')+' mil';
+ return fmt(v);
+}
+function makeId(prefix='v'){
+  return prefix+(window.crypto?.randomUUID?window.crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
+}
+async function imageFileToDataURL(file,maxSide=1000,quality=.78){
+  if(!file || !file.type?.startsWith('image/')) throw new Error('Escolha um arquivo de imagem válido.');
+  let bitmap;
+  try{ bitmap=await createImageBitmap(file); }
+  catch(e){
+    bitmap=await new Promise((resolve,reject)=>{
+      const url=URL.createObjectURL(file),im=new Image();
+      im.onload=()=>{URL.revokeObjectURL(url);resolve(im)};
+      im.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Não foi possível abrir essa imagem.'))};
+      im.src=url;
+    });
+  }
+  const scale=Math.min(1,maxSide/Math.max(bitmap.width,bitmap.height));
+  const w=Math.max(1,Math.round(bitmap.width*scale)),h=Math.max(1,Math.round(bitmap.height*scale));
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d',{alpha:false});
+  ctx.drawImage(bitmap,0,0,w,h);
+  if(bitmap.close)bitmap.close();
+  return canvas.toDataURL('image/jpeg',quality);
+}
+function pct(n,t){return t?((n/t)*100).toFixed(1).replace('.',',')+'%':'0,0%'}
+function slug(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'votacao'}
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');let top=$('topBar');if(top)top.style.display=id==='publicView'?'none':'flex';window.scrollTo({top:0,behavior:'instant'})}
+function goHome(){currentId=null;history.replaceState(null,'',location.pathname+location.search);show('homeView')}
+function getPoll(){return db.polls.find(p=>p.id===currentId)}
+function total(p){return p.people.reduce((s,x)=>s+(Number(x.votes)||0),0)}
+function togglePublic(){draft.ghostPublic=!draft.ghostPublic;$('publicSwitch').classList.toggle('on',draft.ghostPublic)}
+function toggleGhostPublic(){draft.ghostPublic=!draft.ghostPublic;$('ghostPublicSwitch').classList.toggle('on',draft.ghostPublic)}
+function toggleGhostRandom(){draft.ghostRandom=!draft.ghostRandom;$('ghostRandomSwitch').classList.toggle('on',draft.ghostRandom);$('ghostRandomSettings').classList.toggle('hidden',!draft.ghostRandom)}
+function sourceChanged(){let ghost=$('source').value==='ghost';$('ghostSettings').classList.toggle('hidden',!ghost);$('publicSettings').classList.toggle('hidden',ghost);$('oddsSection').classList.toggle('hidden',!ghost);renderOdds()}
+
+function newPoll(){
+ draft={people:[],photo:'',photoCrop:{cropX:50,cropY:50,zoom:1},bg:'',partialBg:{image:'',x:50,y:50,zoom:1,opacity:1},voteBg:{image:'',x:50,y:50,zoom:1,opacity:1},bgSettings:{x:50,y:50,zoom:1,opacity:1},ghostRandom:false,ghostPublic:false};
+ ['pollTitle','brandName','pollDescription','personName'].forEach(id=>$(id).value='');
+ $('direction').value='stay';$('elimCount').value=1;$('source').value='public';$('rule').value='unique';$('weight').value=1;$('deadline').value='';
+ $('ghostTotal').value=1000;$('ghostVariation').value=12;$('ghostMin').value=500;$('ghostMax').value=5000;
+ $('outColor').value='#ef476f';$('stayColor').value='#43d69a';$('bgFile').value='';$('photoFile').value='';$('partialBgFile').value='';$('voteBgFile').value='';$('voteBgColor').value='#0a0d15';$('uniqueMessage').value='Seu voto foi registrado com sucesso! Obrigado por participar.';['bg','partialBg','voteBg'].forEach(k=>resetBgControls(k));
+ $('publicSwitch').classList.remove('on');$('ghostPublicSwitch').classList.remove('on');$('ghostRandomSwitch').classList.remove('on');$('ghostRandomSettings').classList.add('hidden');
+ $('source').value='public';sourceChanged();renderPhotoEditor();renderDraft();['bg','partialBg','voteBg'].forEach(k=>{resetBgControls(k);updateBgPreview(k)});show('createView')
+}
+async function readPhoto(input){
+ let f=input.files?.[0];if(!f)return;
+ try{draft.photo=await imageFileToDataURL(f,560,.58);draft.photoCrop={cropX:50,cropY:50,zoom:1};renderPhotoEditor()}
+ catch(e){alert('Não foi possível carregar a foto: '+e.message);input.value=''}
+}
+function setNewPhotoCrop(key,value){
+ draft.photoCrop=draft.photoCrop||{cropX:50,cropY:50,zoom:1};
+ draft.photoCrop[key]=Number(value);
+ let im=$('newPhotoPreview');
+ if(im)im.style.cssText='width:100%;height:100%;object-fit:cover;object-position:'+draft.photoCrop.cropX+'% '+draft.photoCrop.cropY+'%;transform:scale('+draft.photoCrop.zoom+')';
+ let z=$('newPhotoZoom');if(z&&key==='zoom')z.value=draft.photoCrop.zoom;
+}
+function enablePhotoDrag(){
+ const area=$('photoCropGesture');if(!area)return;
+ let dragging=false,lastX=0,lastY=0;
+ area.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;area.setPointerCapture(e.pointerId);e.preventDefault()});
+ area.addEventListener('pointermove',e=>{
+  if(!dragging)return;
+  const rect=area.getBoundingClientRect(),dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;
+  const crop=draft.photoCrop||{cropX:50,cropY:50,zoom:1};
+  const sensitivity=100/Math.max(80,rect.width)*Math.max(1,crop.zoom);
+  setNewPhotoCrop('cropX',Math.max(0,Math.min(100,crop.cropX-dx*sensitivity)));
+  setNewPhotoCrop('cropY',Math.max(0,Math.min(100,crop.cropY-dy*sensitivity)));
+ });
+ const stop=()=>{dragging=false};area.addEventListener('pointerup',stop);area.addEventListener('pointercancel',stop);area.addEventListener('lostpointercapture',stop);
+}
+function bgDefaults(){return {image:'',x:50,y:50,zoom:1,opacity:1}}
+async function readBackground(input){let f=input.files?.[0];if(!f)return;try{draft.bg=await imageFileToDataURL(f,720,.52);updateBgPreview('bg')}catch(e){alert('Não foi possível carregar o fundo: '+e.message);input.value=''}}
+async function readCustomBackground(input,key){let f=input.files?.[0];if(!f)return;try{draft[key]=draft[key]||bgDefaults();draft[key].image=await imageFileToDataURL(f,720,.52);updateBgPreview(key)}catch(e){alert('Não foi possível carregar o fundo: '+e.message);input.value=''}}
+function clearBackground(){draft.bg='';$('bgFile').value='';updateBgPreview('bg')}
+function clearCustomBackground(key){draft[key]=bgDefaults();let el=$(key==='partialBg'?'partialBgFile':'voteBgFile');if(el)el.value='';resetBgControls(key);updateBgPreview(key)}
+function setBgSetting(key,prop,value){let target=key==='bg'?'bgSettings':key;draft[target]=draft[target]||bgDefaults();draft[target][prop]=Number(value);updateBgPreview(key)}
+function resetBgControls(key){let prefix=key==='bg'?'bg':key;let d=key==='bg'?draft.bgSettings:draft[key];if(!d)return;[['X','x',d.x],['Y','y',d.y],['Zoom','zoom',d.zoom*100],['Opacity','opacity',d.opacity*100]].forEach(([suffix,k,v])=>{let el=$(prefix+suffix);if(el)el.value=v})}
+function updateBgPreview(key){let prefix=key==='bg'?'bg':key,el=$(prefix+'Preview');if(!el)return;let d=key==='bg'?draft.bgSettings:draft[key];let image=key==='bg'?draft.bg:d?.image;let color=key==='voteBg'&&$('voteBgColor')?$('voteBgColor').value:'#101521';el.style.background=color;if(image){let zoom=Math.max(1,Number(d.zoom)||1),x=Number(d.x??50),y=Number(d.y??50),opacity=Math.max(0,Math.min(1,Number(d.opacity??1)));el.innerHTML='<div aria-hidden="true" style="position:absolute;inset:0;background-image:url(\''+image+'\');background-repeat:no-repeat;background-size:auto '+(zoom*100)+'%;background-position:'+x+'% '+y+'%;opacity:'+opacity+';pointer-events:none"></div><span>Prévia</span>'}else el.innerHTML='<span>Prévia do fundo</span>'}
+function bgConfig(p,key){if(key==='bg')return {image:p.bg||'',...(p.bgSettings||bgDefaults())};return p[key]||bgDefaults()}
+
+function renderPhotoEditor(){
+ if(!draft.photo){$('photoEditor').classList.add('hidden');return}
+ draft.photoCrop=draft.photoCrop||{cropX:50,cropY:50,zoom:1};
+ $('photoEditor').classList.remove('hidden');
+ $('photoEditor').innerHTML='<div class="cropBox" style="grid-template-columns:120px 1fr"><div id="photoCropGesture" class="cropGesture"><img id="newPhotoPreview" src="'+draft.photo+'" draggable="false" style="object-position:'+draft.photoCrop.cropX+'% '+draft.photoCrop.cropY+'%;transform:scale('+draft.photoCrop.zoom+')"></div><div><b>Enquadre sua foto</b><div class="sub">Arraste a imagem dentro do círculo, como ao escolher uma foto de perfil. Use o zoom para aproximar ou afastar.</div><label class="label">Zoom</label><input id="newPhotoZoom" type="range" min="1" max="2.5" step=".01" value="'+draft.photoCrop.zoom+'" oninput="setNewPhotoCrop(\'zoom\',this.value)"><div class="sub">A parte dentro do círculo será usada como foto do participante.</div></div></div>';
+ enablePhotoDrag();
+}
+function addPerson(){
+ let name=$('personName').value.trim();if(!name)return alert('Digite o nome do participante.');
+ draft.people.push({id:makeId('p'),name,photo:draft.photo||'',cropX:draft.photoCrop?.cropX??50,cropY:draft.photoCrop?.cropY??50,zoom:draft.photoCrop?.zoom??1,votes:0,ghostWeight:1,ghostBias:0,partialStatus:'neutral',partialChance:null});
+ $('personName').value='';$('photoFile').value='';draft.photo='';draft.photoCrop={cropX:50,cropY:50,zoom:1};renderPhotoEditor();renderDraft()
+}
+function removePerson(i){
+  if(!Number.isInteger(i)||i<0||i>=draft.people.length)return;
+  draft.people.splice(i,1);renderDraft();
+}
+// Exclui pela identidade do participante, não pela posição visual na lista.
+function removePersonById(id){
+  const index=draft.people.findIndex(person=>String(person.id)===String(id));
+  if(index<0)return;
+  draft.people.splice(index,1);
+  renderDraft();
+}
+function setCrop(i,k,v){if(!draft.people[i])return;draft.people[i][k]=Number(v);renderDraft()}
+function renderDraft(){
+ $('people').innerHTML=draft.people.length?draft.people.map((p,i)=>`
+ <div class="person"><div class="avatar">${p.photo?'<img src="'+p.photo+'" style="object-position:'+p.cropX+'% '+p.cropY+'%;transform:scale('+p.zoom+')">':'👤'}</div>
+ <div class="info"><div class="name">${esc(p.name)}</div><div class="sub">Participante ${i+1}</div>
+ ${p.photo?'<div class="cropBox"><div class="cropPreview"><img src="'+p.photo+'" style="object-position:'+p.cropX+'% '+p.cropY+'%;transform:scale('+p.zoom+')"></div><div class="cropControls"><label>X<input type="range" min="0" max="100" value="'+p.cropX+'" oninput="setCrop('+i+',\'cropX\',this.value)"></label><label>Y<input type="range" min="0" max="100" value="'+p.cropY+'" oninput="setCrop('+i+',\'cropY\',this.value)"></label><label>Zoom<input type="range" min="1" max="2.5" step=".01" value="'+p.zoom+'" oninput="setCrop('+i+',\'zoom\',this.value)"></label></div></div>':''}
+ </div><div class="personActions"><details class="editPerson"><summary>✏️ Editar</summary><label class="label">Nome</label><input value="${esc(p.name)}" onchange="editExistingPersonName('${editPollId||''}','${p.id}',this.value)"><label class="label">Imagem</label><input type="file" accept="image/*" onchange="editExistingPersonPhoto('${editPollId||''}','${p.id}',this)"></details><button type="button" class="x" aria-label="Excluir ${esc(p.name)}" title="Excluir participante" onclick="removePersonById('${p.id}')">×</button></div></div>`).join(''):'<div class="empty">Nenhum participante adicionado ainda.</div>';
+ renderOdds()
+}
+function renderOdds(){
+ if(!$('odds'))return;
+ $('odds').innerHTML=draft.people.map((p,i)=>'<div class="card" style="padding:12px;margin:8px 0;background:#0d121d"><b>'+esc(p.name)+'</b><div class="grid2" style="margin-top:8px"><label class="label">Peso relativo<input style="margin-top:5px" type="number" min="0" step=".1" value="'+(p.ghostWeight??1)+'" onchange="draft.people['+i+'].ghostWeight=Math.max(0,Number(this.value)||0)"></label><label class="label">Ajuste fixo por distribuição (+/- votos)<input style="margin-top:5px" type="number" step="1" min="-1000000000" max="1000000000" value="'+(Number(p.ghostBias)||0)+'" placeholder="Ex.: 10 ou -10" onchange="draft.people['+i+'].ghostBias=Math.max(-1000000000,Math.min(1000000000,Math.trunc(Number(this.value)||0)))"></label></div><div class="sub">Número fixo aplicado a cada distribuição: +10 acrescenta 10 votos; -10 retira 10 votos. Zero não altera.</div></div>').join('')
+}
+function editExistingPersonName(pid,xid,value){
+ const p=db.polls.find(p=>p.id===pid);const person=draft.people.find(x=>x.id===xid)||p?.people.find(x=>x.id===xid);if(!person)return;
+ const name=String(value||'').trim();if(!name){alert('O nome não pode ficar vazio.');renderDraft();return}
+ person.name=name;if(p){const savedPerson=p.people.find(x=>x.id===xid);if(savedPerson)savedPerson.name=name;saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error)}
+}
+async function editExistingPersonPhoto(pid,xid,input){
+ const file=input.files?.[0];if(!file)return;
+ const p=db.polls.find(p=>p.id===pid);const person=draft.people.find(x=>x.id===xid)||p?.people.find(x=>x.id===xid);if(!person)return;
+ try{
+  person.photo=await imageFileToDataURL(file,560,.58);
+  person.cropX=50;person.cropY=50;person.zoom=1;
+  if(p){const savedPerson=p.people.find(x=>x.id===xid);if(savedPerson){savedPerson.photo=person.photo;savedPerson.cropX=50;savedPerson.cropY=50;savedPerson.zoom=1}saveDB();if(cloudReady)await cloudSavePoll(p)}
+  renderDraft();alert('Imagem do participante atualizada!');
+ }catch(e){alert('Não foi possível atualizar a imagem: '+e.message)}
+}
+async function createPoll(){
+ if(creatingPoll)return;
+ let title=$('pollTitle').value.trim();if(!title)return alert('Dê um nome para a votação.');
+ if(draft.people.length<2)return alert('Adicione pelo menos 2 participantes.');
+ creatingPoll=true;
+ const createButton=document.querySelector('#createView .actions .btn.primary');
+ if(createButton)createButton.disabled=true;
+ const finish=()=>{creatingPoll=false;if(createButton)createButton.disabled=false};
+ const persist=()=>{try{return saveDB()}catch(e){console.error('Falha ao salvar localmente:',e);alert('Não foi possível salvar os dados neste navegador. Libere espaço e tente novamente.');return false}};
+ let p={id:makeId('v'),title,brandName:$('brandName').value.trim()||'Meu Reality',description:$('pollDescription').value.trim(),direction:$('direction').value,source:$('source').value,rule:$('rule').value,weight:Math.max(1,Number($('weight').value)||1),deadline:$('deadline').value,elimCount:Math.max(1,Number($('elimCount').value)||1),ghostTotal:Math.max(1,Number($('ghostTotal').value)||1000),ghostVariation:Math.max(0,Number($('ghostVariation').value)||0),ghostRandom:draft.ghostRandom,ghostMin:Math.max(1,Number($('ghostMin').value)||500),ghostMax:Math.max(1,Number($('ghostMax').value)||5000),ghostPublic:draft.ghostPublic,outColor:$('outColor').value,stayColor:$('stayColor').value,outLabel:'ELIMINADO',stayLabel:'SALVO',partialOutLabel:'CHANCE DE SAIR',partialStayLabel:'CHANCE DE FICAR',bg:draft.bg,bgSettings:JSON.parse(JSON.stringify(draft.bgSettings)),partialBg:JSON.parse(JSON.stringify(draft.partialBg)),voteBg:JSON.parse(JSON.stringify(draft.voteBg)),voteBgColor:$('voteBgColor').value,uniqueMessage:$('uniqueMessage').value.trim()||'Seu voto foi registrado com sucesso! Obrigado por participar.',people:JSON.parse(JSON.stringify(draft.people)),active:true,created:Date.now(),publicVoters:0};
+ const editing=editPollId?db.polls.find(x=>x.id===editPollId):null;
+ if(editing){
+  p.id=editing.id;p.created=editing.created;p.active=editing.active;p.closedAt=editing.closedAt;p.publicVoters=editing.publicVoters||0;p.ghostAdded=editing.ghostAdded||0;p.outLabel=editing.outLabel||'ELIMINADO';p.stayLabel=editing.stayLabel||'SALVO';p.partialOutLabel=editing.partialOutLabel||'CHANCE DE SAIR';p.partialStayLabel=editing.partialStayLabel||'CHANCE DE FICAR';
+  p.people.forEach(x=>{const old=editing.people.find(y=>y.id===x.id)||editing.people.find(y=>y.name.trim().toLowerCase()===x.name.trim().toLowerCase());if(old){x.id=old.id;x.votes=Number(old.votes)||0;x.ghostVotes=Number(old.ghostVotes)||0;x.partialStatus=old.partialStatus||x.partialStatus;x.partialChance=old.partialChance??x.partialChance;x.ghostBias=Number(old.ghostBias)||0}});
+  db.polls=db.polls.map(x=>x.id===p.id?p:x);editPollId=null;
+  if(!persist()){finish();return}
+  if(cloudReady){
+   try{await cloudSavePoll(p);alert('VOTAÇÃO ATUALIZADA E SINCRONIZADA NA NUVEM!')}
+   catch(e){console.error('Falha ao sincronizar atualização:',e);alert('A votação foi atualizada neste aparelho, mas NÃO foi sincronizada.\\n\\n'+explainCloudError(e))}
+  }else{alert('A votação foi atualizada apenas neste aparelho. A nuvem não está conectada.\\n\\n'+explainCloudError(window.lastCloudError))}
+  finish();openManage(p.id);return;
+ }
+ p.people.forEach(x=>{x.votes=0;x.ghostVotes=0});
+ if(p.source==='ghost')generateGhost(p);
+ db.polls.unshift(p);
+ if(!persist()){db.polls=db.polls.filter(x=>x.id!==p.id);finish();return}
+ if(cloudReady){
+  try{await cloudSavePoll(p);alert('VOTAÇÃO CRIADA E PUBLICADA NA NUVEM! Já pode compartilhar o link.')}
+  catch(e){console.error('Falha ao sincronizar nova votação:',e);alert('A votação foi salva neste aparelho, mas NÃO foi publicada na nuvem. Não compartilhe o link ainda.\\n\\n'+explainCloudError(e))}
+ }else{
+  alert('A votação foi salva somente neste aparelho. A nuvem não conectou, então o público de outros celulares não conseguirá encontrá-la.\\n\\n'+explainCloudError(window.lastCloudError));
+ }
+ finish();openManage(p.id);
+}
+function generateGhost(p){
+ let lo=p.ghostRandom?Math.min(p.ghostMin,p.ghostMax):p.ghostTotal,hi=p.ghostRandom?Math.max(p.ghostMin,p.ghostMax):p.ghostTotal;
+ let grand=p.ghostRandom?Math.floor(lo+Math.random()*(hi-lo+1)):p.ghostTotal;
+ if(!p.people.length)return;
+ let weights=p.people.map(x=>Math.max(0,Number(x.ghostWeight)||1));
+ let sum=weights.reduce((a,b)=>a+b,0)||p.people.length;
+ let vals=weights.map(w=>Math.floor(grand*w/sum));
+ let left=grand-vals.reduce((a,b)=>a+b,0);
+ while(left>0){vals[Math.floor(Math.random()*vals.length)]++;left--}
+ let variation=Math.max(0,Math.min(100,Number(p.ghostVariation)||0));
+ if(variation){
+  for(let k=0;k<Math.floor(grand*variation/100);k++){
+   if(vals.length<2)break;
+   let a=Math.floor(Math.random()*vals.length),b=Math.floor(Math.random()*vals.length);
+   if(a!==b&&vals[a]>0){vals[a]--;vals[b]++}
+  }
+ }
+ vals=applyGhostAdjustments(p.people,vals);
+ p.people.forEach((x,i)=>{x.votes=vals[i];x.ghostVotes=vals[i]});p.ghostAdded=vals.reduce((a,b)=>a+b,0);
+}
+function renderPollList(){
+ let el=$('pollList');
+ if(!db.polls.length){el.innerHTML='<div class="empty">Nenhuma votação criada ainda.</div>';return}
+ el.innerHTML=db.polls.map(p=>`<div class="pollItem"><div class="info"><div class="name">${esc(p.title)}</div><div class="meta">${p.direction==='stay'?'💚 Voto para ficar':'🚨 Voto para eliminar'} • ${p.active?'Em andamento':'Encerrada'} • ${fmt(total(p))} votos</div><div class="pollActions"><button class="btn" onclick="openManageProtected('${p.id}')">Abrir</button><button class="btn" onclick="editPoll('${p.id}')">✏️ Editar</button><button class="btn" onclick="duplicatePoll('${p.id}')">📄 Duplicar</button><button class="btn" onclick="copyPublic('${p.id}')">🔗 Compartilhar</button><button class="btn danger" onclick="deletePoll('${p.id}')">Excluir</button></div></div><span class="pill ${p.active?'live':'closed'}">${p.active?'● Aberta':'✓ Encerrada'}</span></div>`).join('')
+}
+function editPoll(id){
+ const p=db.polls.find(x=>x.id===id);if(!p)return;
+ editPollId=id;draft={people:JSON.parse(JSON.stringify(p.people||[])),photo:'',photoCrop:{cropX:50,cropY:50,zoom:1},bg:p.bg||'',partialBg:JSON.parse(JSON.stringify(p.partialBg||bgDefaults())),voteBg:JSON.parse(JSON.stringify(p.voteBg||bgDefaults())),bgSettings:JSON.parse(JSON.stringify(p.bgSettings||bgDefaults())),ghostRandom:!!p.ghostRandom,ghostPublic:!!p.ghostPublic};
+ $('pollTitle').value=p.title||'';$('brandName').value=p.brandName||'';$('pollDescription').value=p.description||'';$('direction').value=p.direction||'stay';$('elimCount').value=p.elimCount||1;$('source').value=p.source||'public';$('rule').value=p.rule||'unique';$('weight').value=p.weight||1;$('deadline').value=p.deadline||'';$('ghostTotal').value=p.ghostTotal||1000;$('ghostVariation').value=p.ghostVariation??12;$('ghostMin').value=p.ghostMin||500;$('ghostMax').value=p.ghostMax||5000;$('outColor').value=p.outColor||'#ef476f';$('stayColor').value=p.stayColor||'#43d69a';$('voteBgColor').value=p.voteBgColor||'#0a0d15';$('uniqueMessage').value=p.uniqueMessage||'Seu voto foi registrado com sucesso! Obrigado por participar.';
+ $('publicSwitch').classList.toggle('on',p.ghostPublic&&p.source!=='ghost');$('ghostPublicSwitch').classList.toggle('on',p.ghostPublic);$('ghostRandomSwitch').classList.toggle('on',p.ghostRandom);$('ghostRandomSettings').classList.toggle('hidden',!p.ghostRandom);sourceChanged();renderPhotoEditor();renderDraft();['bg','partialBg','voteBg'].forEach(k=>{resetBgControls(k);updateBgPreview(k)});show('createView');window.scrollTo({top:0,behavior:'instant'});
+}
+function duplicatePoll(id){
+ const source=db.polls.find(x=>x.id===id);if(!source)return;
+ const p=JSON.parse(JSON.stringify(source));p.id='v'+Date.now()+Math.random();p.title=(source.title||'Votação')+' (cópia)';p.created=Date.now();p.active=true;delete p.closedAt;p.publicVoters=0;p.ghostAdded=0;
+ p.people=(p.people||[]).map(x=>({...x,id:makeId('p'),votes:0,partialStatus:x.partialStatus||'neutral',partialChance:x.partialChance??null}));
+ db.polls.unshift(p);
+ const saved=saveDB();
+ if(cloudReady)cloudSavePoll(p).then(()=>{if(!saved)alert('Cópia sincronizada na nuvem com as fotos. O armazenamento local está cheio; mantenha a conexão para acessar a cópia neste aparelho.')}).catch(e=>alert('A cópia ficou aberta nesta sessão, mas não foi possível sincronizá-la: '+e.message));
+ renderPollList();alert('Votação duplicada! A cópia mantém as fotos e começa sem os votos da original.');openManage(p.id);
+}
+async function deletePoll(id){
+ const exists=db.polls.some(p=>p.id===id);if(!exists)return;
+ if(!confirm('Excluir somente esta votação?'))return;
+ db.polls=db.polls.filter(p=>p.id!==id);
+ try{saveDB()}catch(e){alert('Não foi possível salvar a exclusão: armazenamento cheio.');return}
+ if(cloudReady){try{await cloudPollRef(id).delete()}catch(e){console.error('Falha ao excluir no Firebase:',e)}}
+ if(currentId===id)currentId=null;
+ renderPollList();
+}
+function openManageProtected(id){ openManage(id); }
+function openManage(id){currentId=id;selectedTab='partial';show('manageView');renderManage()}
+function backToManage(){show('manageView');renderManage()}
+function publicUrl(id){
+ let base=location.href.split('#')[0];
+ return base+'#vote='+encodeURIComponent(id);
+}
+function openPublic(id){
+ location.hash='vote='+encodeURIComponent(id);
+ publicPage(id);
+}
+async function copyPublic(id){
+ let url=publicUrl(id);
+ try{
+   if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(url);
+   else throw new Error('clipboard');
+   alert('Link público copiado!');
+ }catch(e){
+   prompt('Copie este link para enviar:',url);
+ }
+}
+function resultInfo(p){
+ const people=Array.isArray(p.people)?p.people:[];
+ const sorted=[...people].sort((a,b)=>(Number(b.votes)||0)-(Number(a.votes)||0));
+ const count=Math.max(0,Math.min(sorted.length,Math.floor(Number(p.elimCount)||1)));
+ const direction=String(p.direction||'stay').toLowerCase();
+ const eliminated=direction==='stay'?sorted.slice(Math.max(0,sorted.length-count)):sorted.slice(0,count);
+ const eliminatedIds=new Set(eliminated.map(x=>String(x.id)));
+ const isEliminated=x=>eliminated.some(e=>e===x || (e.id!=null && x.id!=null && String(e.id)===String(x.id)));
+ return {sorted,eliminated,eliminatedIds,isEliminated}
+}
+function resultCard(p,x,i,t){
+ let info=resultInfo(p),out=info.isEliminated(x),color=out?p.outColor:p.stayColor;
+ return `<div class="result" style="border-color:${color}55"><div class="rank" style="background:${color};color:#111">${i+1}</div><div class="resultImg" style="background:${color}22">${x.photo?'<img src="'+x.photo+'" style="object-position:'+x.cropX+'% '+x.cropY+'%;transform:scale('+x.zoom+')">':'👤'}</div><div class="info"><div class="name">${esc(x.name)}</div><div class="sub">${fmt(x.votes)} voto(s)</div><div class="bar"><i style="width:${t?Math.min(100,x.votes/t*100):0}%;background:${color}"></i></div></div><div class="percent">${pct(x.votes,t)}</div></div>`
+}
+function renderManage(){
+ let p=getPoll();if(!p)return goHome();let t=total(p),info=resultInfo(p);
+ $('manageContent').innerHTML=`<div class="card">
+ <div class="sectionTitle"><div><div class="sub">${esc(p.brandName||'Meu Reality')}</div><h2>${esc(p.title)}</h2><div class="sub">${p.active?'🟢 Votação aberta':'🔴 Votação encerrada'}</div></div><div class="actions"><button class="btn" onclick="editPoll('${p.id}')">✏️ Editar votação</button><button class="btn" onclick="duplicatePoll('${p.id}')">📄 Duplicar</button><button class="btn" onclick="show('listView');renderPollList()">Voltar</button></div></div>
+ <div class="statGrid"><div class="stat">Total de votos<b>${fmt(t)}</b></div><div class="stat">Participantes<b>${p.people.length}</b></div><div class="stat">Eliminados<b>${p.elimCount}</b></div></div>
+ <div class="tabs" style="margin-top:16px"><button class="tab ${selectedTab==='partial'?'active':''}" onclick="selectedTab='partial';renderManage()">📊 Parcial</button><button class="tab ${selectedTab==='settings'?'active':''}" onclick="selectedTab='settings';renderManage()">⚙️ Configurações</button><button class="tab ${selectedTab==='share'?'active':''}" onclick="selectedTab='share';renderManage()">🔗 Compartilhar</button></div>
+ ${selectedTab==='partial'?partialHTML(p,t,info):selectedTab==='settings'?settingsHTML(p):shareHTML(p)}
+ </div>`
+}
+
+function togglePartialTotalMode(pid, mode){
+ let p=db.polls.find(x=>x.id===pid);if(!p)return;
+ p.customPartialTotalMode = mode;
+ saveDB(); renderManage();
+}
+function setCustomPartialTotalVal(pid, val){
+ let p=db.polls.find(x=>x.id===pid);if(!p)return;
+ p.customPartialTotalVal = Math.max(0, Math.floor(Number(val)||0));
+ saveDB();
+}
+
+function partialHTML(p,t,info){
+ const isCustom = p.customPartialTotalMode === 'custom';
+ const customVal = p.customPartialTotalVal || (t > 0 ? t : 1000);
+ return `<div class="card" style="padding:14px;margin-bottom:14px;background:#0d121d;border:1px solid var(--line)">
+   <h3 style="font-size:16px;margin:0 0 8px">🎬 Opções de Votos para o Vídeo da Parcial</h3>
+   <div class="grid2">
+     <div>
+       <label class="label">Modo do Total de Votos</label>
+       <select onchange="togglePartialTotalMode('${p.id}', this.value)">
+         <option value="random" ${!isCustom?'selected':''}>🎲 Total Aleatório / Dinâmico</option>
+         <option value="custom" ${isCustom?'selected':''}>✏️ Definir Total Exato</option>
+       </select>
+     </div>
+     <div id="customPartialTotalWrap" class="${isCustom?'':'hidden'}">
+       <label class="label">Quantidade de Votos no Vídeo</label>
+       <input type="number" min="0" value="${customVal}" onchange="setCustomPartialTotalVal('${p.id}', this.value)" placeholder="Ex: 150000">
+     </div>
+   </div>
+   <div class="sub" style="margin-top:8px">No modo aleatório, o sistema sorteia um total de votos proporcional aos participantes. No modo exato, você escolhe o número final exibido no vídeo.</div>
+ </div>
+ <div class="notice">Edite a quantidade exata de votos ou adicione/remova votos fantasmas nos cartões abaixo.</div>
+ <div class="actions">
+ <button class="btn" onclick="addGhostAmountAll('${p.id}')">👻 Adicionar fantasmas para todos</button>
+ <button class="btn" onclick="randomizeGhostsAll('${p.id}')">🎲 Aleatorizar fantasmas para todos</button>
+ <button class="btn danger" onclick="removeAllGhostVotes('${p.id}')">🧹 Remover todos os votos fantasmas</button>
+ <button class="btn primary" onclick="generateVideo('${p.id}','partial')">🎬 Vídeo da parcial</button>
+ ${!p.active?'':'<button class="btn danger" onclick="closePoll(&quot;'+p.id+'&quot;)">■ Encerrar votação</button>'}
+ </div>
+ <div id="partialList" style="margin-top:14px">${p.people.slice().sort((a,b)=>b.votes-a.votes).map((x,i)=>partialCard(p,x,i,t)).join('')}</div>`
+}
+function requireAdmin(p){ return true; }
+function randomizeGhostsAll(id){
+ let p=db.polls.find(x=>x.id===id);if(!p||!p.people.length)return;
+ let total=prompt('Quantidade TOTAL de votos fantasmas para distribuir entre TODOS:','1000');
+ if(total===null)return;total=Math.max(0,Math.floor(Number(total)||0));if(!total)return;
+ let variation=Math.max(0,Math.min(100,Number(prompt('Variação aleatória (%) entre participantes:','12'))||0));
+ let weights=p.people.map(x=>Math.max(.01,(Number(x.ghostWeight)||1)*(1+(Math.random()*2-1)*variation/100)));
+ let sum=weights.reduce((a,b)=>a+b,0),vals=weights.map(w=>Math.floor(total*w/sum));
+ let left=total-vals.reduce((a,b)=>a+b,0);
+ while(left-->0)vals[Math.floor(Math.random()*vals.length)]++;
+ vals=applyGhostAdjustments(p.people,vals);
+ p.people.forEach((x,i)=>{x.votes=(Number(x.votes)||0)+vals[i];x.ghostVotes=Math.max(0,Number(x.ghostVotes)||0)+vals[i]});
+ p.ghostAdded=(Number(p.ghostAdded)||0)+vals.reduce((a,b)=>a+b,0);
+ saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error);renderManage();
+}
+function addGhostAmountAll(id){
+ let p=db.polls.find(x=>x.id===id);if(!p||!p.people.length)return;
+ let total=prompt('Quantidade TOTAL de votos fantasmas para adicionar e distribuir entre TODOS:','100');
+ if(total===null)return;total=Math.max(0,Math.floor(Number(total)||0));if(!total)return;
+ let weights=p.people.map(x=>Math.max(.01,Number(x.ghostWeight??1)||0));
+ let sum=weights.reduce((a,b)=>a+b,0)||p.people.length;
+ let vals=weights.map(w=>Math.floor(total*w/sum));
+ let left=total-vals.reduce((a,b)=>a+b,0);
+ while(left>0){vals[Math.floor(Math.random()*vals.length)]++;left--}
+ vals=applyGhostAdjustments(p.people,vals);
+ p.people.forEach((x,i)=>{x.votes=(Number(x.votes)||0)+vals[i];x.ghostVotes=Math.max(0,Number(x.ghostVotes)||0)+vals[i]});
+ p.ghostAdded=(Number(p.ghostAdded)||0)+vals.reduce((a,b)=>a+b,0);
+ saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error);renderManage();
+}
+
+function partialCard(p,x,i,t){
+ let color=x.partialStatus==='out'?p.outColor:x.partialStatus==='stay'?p.stayColor:'#596179';
+ return `<div class="result" style="border-color:${color}77"><div class="resultImg">${x.photo?'<img src="'+x.photo+'" style="object-position:'+x.cropX+'% '+x.cropY+'%;transform:scale('+x.zoom+')">':'👤'}</div><div class="info"><div class="name">${esc(x.name)}</div><div class="sub">${fmt(x.votes)} voto(s) • ${pct(x.votes,t)}</div><div class="bar"><i style="width:${t?x.votes/t*100:0}%;background:${color}"></i></div><div class="actions" style="margin-top:10px"><button class="btn ok" onclick="editPersonVotesDirect('${p.id}','${x.id}')">✏️ Editar votos</button><button class="btn" onclick="adjustVote('${p.id}','${x.id}',-1)">−1</button><button class="btn" onclick="adjustVote('${p.id}','${x.id}',1)">＋1</button><button class="btn" onclick="addGhostDialog('${p.id}','${x.id}')">👻 Adicionar fantasmas</button><button class="btn danger" onclick="removeGhostDialog('${p.id}','${x.id}')">🗑️ Remover fantasmas</button><button class="btn ${x.partialStatus==='out'?'danger':''}" onclick="setPartialStatus('${p.id}','${x.id}','out')">🎨 Marcar quem sai</button><button class="btn ${x.partialStatus==='stay'?'ok':''}" onclick="setPartialStatus('${p.id}','${x.id}','stay')">🎨 Marcar quem fica</button><button class="btn" onclick="setPartialStatus('${p.id}','${x.id}','neutral')">Neutro</button></div></div><div class="percent">${x.partialChance==null?'—':Number(x.partialChance).toFixed(1).replace('.',',')+'%'}</div></div>`
+}
+
+function editPersonVotesDirect(pid, xid){
+ let p=db.polls.find(p=>p.id===pid), x=p?.people.find(x=>x.id===xid); if(!p||!x)return;
+ let raw=prompt(`Digite o número exato de votos para ${x.name}:`, String(x.votes||0));
+ if(raw===null) return;
+ let newVal=Math.max(0, Math.floor(Number(raw)||0));
+ x.votes=newVal;
+ saveDB(); if(cloudReady) cloudSavePoll(p).catch(console.error);
+ renderManage();
+}
+
+async function addGhostDialog(pid, personId=null){
+  let p=db.polls.find(p=>p.id===pid);
+  if(!p) return;
+  let x=personId?p.people.find(a=>a.id===personId):null;
+  if(!x){let name=prompt('Nome do participante que receberá os votos:', p.people[0]?.name||'');
+  if(name===null) return;
+  x=p.people.find(a=>a.name.toLowerCase()===name.trim().toLowerCase());}
+  if(!x){
+    alert('Participante não encontrado. Use o nome exatamente como aparece na votação.');
+    return;
+  }
+  let amount=prompt('Quantos votos fantasmas deseja adicionar?', '100');
+  if(amount===null) return;
+  amount=Math.max(0,Math.floor(Number(amount)||0));
+  if(!amount) return alert('Informe uma quantidade maior que zero.');
+  if(cloudReady){
+    try{
+      await cloudAddGhostVotes(pid,x.id,amount);
+      let fresh=await cloudLoadPoll(pid);
+      if(fresh){ db.polls=db.polls.map(a=>a.id===pid?fresh:a); }
+      saveDB(); renderManage();
+      alert(amount.toLocaleString('pt-BR')+' votos fantasmas adicionados!');
+    }catch(e){ alert('Não foi possível adicionar: '+e.message); }
+  }else{
+    x.votes=(Number(x.votes)||0)+amount;
+    x.ghostVotes=Math.max(0,Number(x.ghostVotes)||0)+amount;
+    p.ghostAdded=(Number(p.ghostAdded)||0)+amount;
+    saveDB(); renderManage();
+    alert(amount.toLocaleString('pt-BR')+' votos fantasmas adicionados localmente.');
+  }
+}
+
+async function removeGhostDialog(pid,xid){
+ let p=db.polls.find(p=>p.id===pid),x=p?.people.find(x=>x.id===xid);if(!p||!x)return;
+ let available=Math.max(0,Number(x.ghostVotes)||0);
+ if(!available){alert('Não há votos fantasmas rastreados para remover deste participante. Votos antigos, adicionados antes desta atualização, não podem ser separados com segurança dos votos públicos.');return;}
+ let raw=prompt(`Quantos votos fantasmas deseja remover de ${x.name}? Disponíveis: ${available}`,String(available));
+ if(raw===null)return;let amount=Math.max(0,Math.floor(Number(raw)||0));if(!amount)return;
+ if(cloudReady){try{await cloudRemoveGhostVotes(pid,xid,amount);let fresh=await cloudLoadPoll(pid);if(fresh)db.polls=db.polls.map(a=>a.id===pid?fresh:a);saveDB();renderManage();alert('Votos fantasmas removidos.');}catch(e){alert('Não foi possível remover os votos: '+e.message)}}
+ else{let removed=Math.min(amount,available);x.ghostVotes=available-removed;x.votes=Math.max(0,(Number(x.votes)||0)-removed);p.ghostAdded=Math.max(0,(Number(p.ghostAdded)||0)-removed);saveDB();renderManage();alert(`${removed.toLocaleString('pt-BR')} votos fantasmas removidos.`)}
+}
+async function removeAllGhostVotes(pid){
+ const p=db.polls.find(a=>a.id===pid); if(!p)return;
+ const available=(p.people||[]).reduce((n,x)=>n+Math.max(0,Number(x.ghostVotes)||0),0);
+ if(!available){alert('Não há votos fantasmas rastreados para remover. Os votos normais serão mantidos.');return;}
+ if(!confirm(`Remover todos os ${available.toLocaleString('pt-BR')} votos fantasmas de todos os participantes? Os votos normais do público serão mantidos.`))return;
+ if(cloudReady){
+   try{
+     await cloudRemoveAllGhostVotes(pid);
+     const fresh=await cloudLoadPoll(pid);
+     if(fresh)db.polls=db.polls.map(a=>a.id===pid?fresh:a);
+     saveDB();renderManage();alert('Todos os votos fantasmas foram removidos. Os votos normais foram mantidos.');
+   }catch(e){alert('Não foi possível remover os votos fantasmas: '+e.message);}
+ }else{
+   let removed=0;
+   p.people.forEach(x=>{const n=Math.max(0,Math.floor(Number(x.ghostVotes)||0));removed+=n;x.votes=Math.max(0,(Number(x.votes)||0)-n);x.ghostVotes=0;});
+   p.ghostAdded=0;saveDB();renderManage();alert(`${removed.toLocaleString('pt-BR')} votos fantasmas removidos. Os votos normais foram mantidos.`);
+ }
+}
+function setGhostBias(pid,xid,value){let p=db.polls.find(p=>p.id===pid),x=p?.people.find(x=>x.id===xid);if(!x)return;x.ghostBias=Math.max(-1000000000,Math.min(1000000000,Math.trunc(Number(value)||0)));saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error);renderManage()}
+function applyGhostAdjustments(people,baseValues){
+ return baseValues.map((v,i)=>Math.max(0,Math.trunc(v)+(Math.trunc(Number(people[i].ghostBias)||0))));
+}
+function adjustVote(pid,xid,d){let p=db.polls.find(p=>p.id===pid),x=p?.people.find(x=>x.id===xid);if(!x)return;x.votes=Math.max(0,(Number(x.votes)||0)+d);saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error);renderManage()}
+function setPartialStatus(pid,xid,status){let p=db.polls.find(p=>p.id===pid),x=p?.people.find(x=>x.id===xid);if(!x)return;x.partialStatus=status;let v=prompt('Porcentagem de possível eliminação (opcional):',x.partialChance??'');if(v!==null&&v!=='')x.partialChance=Math.max(0,Math.min(100,Number(v)||0));saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error);renderManage()}
+function randomizePartial(id){let p=db.polls.find(p=>p.id===id);if(!p)return;generateGhost(p);saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error);renderManage()}
+function closePoll(id){let p=db.polls.find(p=>p.id===id);if(!p)return;if(!confirm('Encerrar a votação? Depois disso ela fica somente para consulta.'))return;p.active=false;p.closedAt=Date.now();saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error);renderManage()}
+function settingsHTML(p){
+ return `<div class="grid2"><div><label class="label">Tipo</label><div class="notice">${p.direction==='stay'?'💚 Voto para ficar — os menos votados saem.':'🚨 Voto para eliminar — os mais votados saem.'}</div></div><div><label class="label">Eliminados</label><div class="notice">${p.elimCount}</div></div></div>
+ <div class="notice">${p.source==='ghost'?'👻 Votos fantasmas':'👥 Votos públicos'}${p.ghostPublic?' + público habilitado':''}${p.source==='public'?' • '+(p.rule==='unique'?'voto único':'voto torcida')+' • peso '+p.weight+'x':''}</div>
+ <div class="notice">🎨 Na animação final, <b>Quem sai</b> recebe automaticamente a primeira cor e <b>Quem fica</b> recebe a segunda. Em “voto para ficar”, os menos votados são quem sai.</div><label class="label">Cores do resultado</label><div class="colorRow"><div class="colorPick"><input type="color" value="${p.outColor}" onchange="changeColor('${p.id}','outColor',this.value)"><b>Quem sai</b></div><div class="colorPick"><input type="color" value="${p.stayColor}" onchange="changeColor('${p.id}','stayColor',this.value)"><b>Quem fica</b></div></div>
+ <h3 style="font-size:16px;margin:18px 0 6px">✏️ Personalizar textos dos vídeos</h3><div class="sub">Troque os nomes que aparecem nas etiquetas da parcial e do resultado. Deixe o padrão se preferir.</div><div class="grid2"><div><label class="label">Resultado — quem sai</label><input maxlength="28" value="${esc(p.outLabel||'ELIMINADO')}" onchange="changeExistingLabel('${p.id}','outLabel',this.value)"></div><div><label class="label">Resultado — quem fica</label><input maxlength="28" value="${esc(p.stayLabel||'SALVO')}" onchange="changeExistingLabel('${p.id}','stayLabel',this.value)"></div><div><label class="label">Parcial — quem pode sair</label><input maxlength="28" value="${esc(p.partialOutLabel||'CHANCE DE SAIR')}" onchange="changeExistingLabel('${p.id}','partialOutLabel',this.value)"></div><div><label class="label">Parcial — quem pode ficar</label><input maxlength="28" value="${esc(p.partialStayLabel||'CHANCE DE FICAR')}" onchange="changeExistingLabel('${p.id}','partialStayLabel',this.value)"></div></div>
+ <label class="label">Fundo da eliminação</label><input type="file" accept="image/*" onchange="changeBackgroundExisting('${p.id}',this)"><div class="grid2"><div><label class="label">Opacidade do fundo</label><input type="range" min="0" max="100" value="${Math.round((p.bgSettings?.opacity??1)*100)}" oninput="changeExistingBgSetting('${p.id}','bgSettings','opacity',this.value/100)"></div><div><label class="label">Zoom do fundo</label><input type="range" min="100" max="250" value="${Math.round((p.bgSettings?.zoom??1)*100)}" oninput="changeExistingBgSetting('${p.id}','bgSettings','zoom',this.value/100)"></div><div><label class="label">Posição X</label><input type="range" min="0" max="100" value="${p.bgSettings?.x??50}" oninput="changeExistingBgSetting('${p.id}','bgSettings','x',this.value)"></div><div><label class="label">Posição Y</label><input type="range" min="0" max="100" value="${p.bgSettings?.y??50}" oninput="changeExistingBgSetting('${p.id}','bgSettings','y',this.value)"></div></div><label class="label">Fundo da parcial</label><input type="file" accept="image/*" onchange="changeExistingCustomBg('${p.id}','partialBg',this)"><div class="grid2"><div><label class="label">Opacidade da parcial</label><input type="range" min="0" max="100" value="${Math.round((p.partialBg?.opacity??1)*100)}" oninput="changeExistingBgSetting('${p.id}','partialBg','opacity',this.value/100)"></div><div><label class="label">Zoom da parcial</label><input type="range" min="100" max="250" value="${Math.round((p.partialBg?.zoom??1)*100)}" oninput="changeExistingBgSetting('${p.id}','partialBg','zoom',this.value/100)"></div><div><label class="label">Posição X</label><input type="range" min="0" max="100" value="${p.partialBg?.x??50}" oninput="changeExistingBgSetting('${p.id}','partialBg','x',this.value)"></div><div><label class="label">Posição Y</label><input type="range" min="0" max="100" value="${p.partialBg?.y??50}" oninput="changeExistingBgSetting('${p.id}','partialBg','y',this.value)"></div></div><label class="label">Fundo da tela pública</label><input type="file" accept="image/*" onchange="changeExistingCustomBg('${p.id}','voteBg',this)"><div class="grid2"><div><label class="label">Opacidade da tela pública</label><input type="range" min="0" max="100" value="${Math.round((p.voteBg?.opacity??1)*100)}" oninput="changeExistingBgSetting('${p.id}','voteBg','opacity',this.value/100)"></div><div><label class="label">Zoom da tela pública</label><input type="range" min="100" max="250" value="${Math.round((p.voteBg?.zoom??1)*100)}" oninput="changeExistingBgSetting('${p.id}','voteBg','zoom',this.value/100)"></div><div><label class="label">Posição X</label><input type="range" min="0" max="100" value="${p.voteBg?.x??50}" oninput="changeExistingBgSetting('${p.id}','voteBg','x',this.value)"></div><div><label class="label">Posição Y</label><input type="range" min="0" max="100" value="${p.voteBg?.y??50}" oninput="changeExistingBgSetting('${p.id}','voteBg','y',this.value)"></div></div><label class="label">Cor base da tela pública</label><input type="color" value="${p.voteBgColor||'#0a0d15'}" onchange="changeExistingBgColor('${p.id}',this.value)" style="height:42px;padding:4px"><label class="label">Mensagem após votar</label><input value="${esc(p.uniqueMessage||'Seu voto foi registrado com sucesso! Obrigado por participar.') }" onchange="changeExistingMessage('${p.id}',this.value)">
+ <div class="actions"><button class="btn" onclick="copyPublic('${p.id}')">🔗 Copiar link público</button><button class="btn" onclick="generateVideo('${p.id}','final')">🎬 Animação do resultado</button>${p.active?'<button class="btn danger" onclick="closePoll(&quot;'+p.id+'&quot;)">Encerrar</button>':''}</div>`
+}
+function shareHTML(p){
+ let url=publicUrl(p.id);
+ return `<div class="notice"><b>🔗 Link público para votar</b><br><span style="word-break:break-all">${esc(url)}</span><br><br>Envie <b>somente esse link</b> para os votantes.</div>
+ <div class="actions"><button class="btn primary" onclick="copyPublic('${p.id}')">🔗 Copiar link público</button><button class="btn" onclick="openPublic('${p.id}')">👀 Testar como votante</button></div>`
+}
+function changeColor(id,k,v){let p=db.polls.find(p=>p.id===id);p[k]=v;saveDB()}
+async function changeBackgroundExisting(id,input){let f=input.files?.[0];if(!f)return;try{let p=db.polls.find(p=>p.id===id);if(!p)return;p.bg=await imageFileToDataURL(f,720,.52);p.bgSettings=p.bgSettings||bgDefaults();saveDB();if(cloudReady)await cloudSavePoll(p);alert('Fundo salvo!')}catch(e){alert('Não foi possível salvar o fundo: '+e.message)}}
+async function changeExistingCustomBg(id,key,input){let f=input.files?.[0];if(!f)return;try{let p=db.polls.find(p=>p.id===id);if(!p)return;p[key]=p[key]||bgDefaults();p[key].image=await imageFileToDataURL(f,720,.52);saveDB();if(cloudReady)await cloudSavePoll(p);alert('Fundo salvo!')}catch(e){alert('Não foi possível salvar o fundo: '+e.message)}}
+function changeExistingBgSetting(id,key,prop,value){let p=db.polls.find(p=>p.id===id);if(!p)return;p[key]=p[key]||bgDefaults();p[key][prop]=Number(value);saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error)}
+function changeExistingMessage(id,value){let p=db.polls.find(p=>p.id===id);if(!p)return;p.uniqueMessage=value.trim()||'Seu voto foi registrado com sucesso! Obrigado por participar.';saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error)}
+function changeExistingLabel(id,key,value){let p=db.polls.find(p=>p.id===id);if(!p)return;const defaults={outLabel:'ELIMINADO',stayLabel:'SALVO',partialOutLabel:'CHANCE DE SAIR',partialStayLabel:'CHANCE DE FICAR'};p[key]=String(value||'').trim().slice(0,28)||defaults[key];saveDB();if(cloudReady)cloudSavePoll(p).catch(e=>console.error('Falha ao sincronizar o texto do vídeo:',e))}
+function changeExistingBgColor(id,value){let p=db.polls.find(p=>p.id===id);if(!p)return;p.voteBgColor=value;saveDB();if(cloudReady)cloudSavePoll(p).catch(console.error)}
+
+async function publicPage(id){
+ let p=db.polls.find(p=>p.id===id);
+ if(cloudReady){
+   try{
+     const fresh=await cloudLoadPoll(id);
+     if(fresh){
+       p=fresh;
+       db.polls=db.polls.some(a=>a.id===id)?db.polls.map(a=>a.id===id?fresh:a):[fresh,...db.polls];
+       saveDB();
+     }
+   }catch(e){ console.error("Falha ao carregar votação online:",e); }
+ }
+ if(!p){
+   $('publicContent').innerHTML='<div class="card"><h2>Votação não encontrada</h2><p>O link pode estar incompleto ou esta votação foi excluída.</p></div>';
+   show('publicView');return;
+ }
+ let closed=!p.active;
+ let choices=p.people.map(x=>`<button class="voteChoice ${publicChoice===x.id?'selected':''}" onclick="publicChoice='${x.id}';publicPage('${p.id}')">${x.photo?'<img src="'+x.photo+'" style="object-position:'+x.cropX+'% '+x.cropY+'%;transform:scale('+x.zoom+')">':'<span class="avatar">👤</span>'}<span><b>${esc(x.name)}</b></span></button>`).join('');
+ let vb=p.voteBg||bgDefaults(),voteBgStyle=p.voteBg?.image?`background-color:${p.voteBgColor||'#0a0d15'};background-image:linear-gradient(rgba(10,13,21,${1-Math.max(0,Math.min(1,Number(vb.opacity??1)))}),rgba(10,13,21,${1-Math.max(0,Math.min(1,Number(vb.opacity??1)))})),url('${vb.image}');background-size:100% 100%,${Math.round((Number(vb.zoom)||1)*100)}% auto;background-position:center,${vb.x??50}% ${vb.y??50}%;background-repeat:no-repeat`:`background:${p.voteBgColor||'#121725'}`;
+ $('publicContent').innerHTML=`<div class="card" style="${voteBgStyle}"><div style="text-align:center"><div class="sub" style="margin-bottom:5px">🎬 ${esc(p.brandName||'Meu Reality')}</div><h1>${esc(p.title)}</h1>${p.description?'<p style="color:var(--muted);line-height:1.5;margin:8px auto 16px;max-width:560px">'+esc(p.description)+'</p>':''}<p style="text-align:center;color:var(--muted)">${closed?'Votação encerrada.':'Você vota em quem?'} ${p.direction==='stay'?'💚 Para ficar':'🚨 Para eliminar'}</p></div>${closed?'<div class="notice">Esta votação está encerrada. Os resultados não são exibidos nesta página.</div>':choices+'<button class="btn primary" style="width:100%;margin-top:14px" onclick="submitPublicVote(&quot;'+p.id+'&quot;)">✓ Confirmar voto</button>'}</div>`
+ show('publicView')
+}
+async function submitPublicVote(id){
+  let p=db.polls.find(p=>p.id===id);
+  if(!p||!p.active||!publicChoice)return alert('Escolha um participante.');
+  let voterKey='voted_'+id;
+  if(p.rule==='unique'&&localStorage.getItem(voterKey))return alert('Este navegador já registrou um voto nesta votação.');
+  let choice=publicChoice;
+  try{
+    if(cloudReady){
+      await cloudAddPublicVote(id,choice,Number(p.weight)||1);
+      let fresh=await cloudLoadPoll(id);
+      if(fresh){ db.polls=db.polls.map(a=>a.id===id?fresh:a); saveDB(); }
+    }else{
+      let x=p.people.find(x=>x.id===choice);if(!x)return;
+      x.votes+=Number(p.weight)||1;p.publicVoters=(p.publicVoters||0)+1;saveDB();
+    }
+    if(p.rule==='unique')localStorage.setItem(voterKey,'1');
+    publicChoice=null;
+    alert(p.uniqueMessage||'Seu voto foi registrado com sucesso! Obrigado por participar.');
+    publicPage(id);
+  }catch(e){
+    alert('Não foi possível registrar o voto: '+e.message);
+  }
+}
+
+function drawImageCover(ctx,img,x,y,w,h,cropX=50,cropY=50,zoom=1){
+ let s=Math.max(w/img.width,h/img.height)*zoom,dw=img.width*s,dh=img.height*s,px=x-(dw-w)*cropX/100,py=y-(dh-h)*cropY/100;ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.drawImage(img,px,py,dw,dh);ctx.restore()
+}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.closePath()}
+async function generateVideo(id,kind){
+ let p=db.polls.find(p=>p.id===id);if(!p)return;
+ currentId=id;show('videoView');$('videoDownload').classList.add('hidden');
+ $('videoStatus').textContent=kind==='partial'?'Gerando parcial simulada...':'Gerando resultado real...';
+ let c=$('videoCanvas');c.width=720;c.height=520;let ctx,imgs={};
+ await Promise.all(p.people.map(x=>new Promise(res=>{if(!x.photo)return res();let im=new Image();im.onload=()=>{imgs[x.id]=im;res()};im.onerror=res;im.src=x.photo})));
+
+ const videoCols=Math.max(1,Math.min(4,p.people.length)),videoRows=Math.max(1,Math.ceil(p.people.length/videoCols));
+ c.width=720;c.height=Math.max(420,165+videoRows*180+(videoRows-1)*10+105);
+ ctx=c.getContext('2d',{alpha:false,desynchronized:true});ctx.setTransform(1,0,0,1,0,0);
+ let videoBgData=kind==='partial'?(p.partialBg||bgDefaults()):{image:p.bg||'',...(p.bgSettings||bgDefaults())};let videoBgImage=null;if(videoBgData.image){videoBgImage=await new Promise(res=>{let im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=videoBgData.image})}
+ let stream,chunks=[],rec,drawingFailed=false;
+
+ try{stream=c.captureStream(20)}catch(e){
+   $('videoStatus').textContent='Este navegador não consegue gravar o canvas. Tente usar Chrome ou Edge atualizado.';
+   console.error(e);return;
+ }
+ let recOpts={videoBitsPerSecond:1400000};
+ try{if(MediaRecorder.isTypeSupported('video/webm;codecs=vp8'))recOpts.mimeType='video/webm;codecs=vp8';else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))recOpts.mimeType='video/webm;codecs=vp9';rec=new MediaRecorder(stream,recOpts)}catch(e){
+   try{rec=new MediaRecorder(stream,{videoBitsPerSecond:1600000})}catch(err){stream.getTracks().forEach(t=>t.stop());$('videoStatus').textContent='Não foi possível iniciar a gravação neste navegador.';console.error(err);return;}
+ }
+ rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+ rec.onerror=e=>{$('videoStatus').textContent='Erro ao gravar o vídeo. Tente novamente em outro navegador.';console.error('MediaRecorder error',e)};
+ rec.onstop=()=>{
+  stream.getTracks().forEach(t=>t.stop());
+  if(drawingFailed){$('videoStatus').textContent='A animação encontrou um erro e foi interrompida. Tente gerar o vídeo novamente.';return;}
+  let blob=new Blob(chunks,{type:rec.mimeType||'video/webm'}),url=URL.createObjectURL(blob);let a=$('videoDownload');a.href=url;a.download=(kind==='partial'?'parcial-simulada-':'resultado-real-')+slug(p.title)+'.webm';a.classList.remove('hidden');$('videoStatus').textContent='Vídeo pronto! Toque em “Baixar vídeo” para salvar.'
+ };
+ rec.start(500);
+
+ let arr=[...p.people],displayVotes={},initialOrder=arr.map(x=>x.id);
+ if(kind==='partial'){
+   let baseTotal;
+   if(p.customPartialTotalMode === 'custom' && Number(p.customPartialTotalVal) >= 0){
+     baseTotal = Math.max(arr.length, Math.floor(Number(p.customPartialTotalVal)));
+   } else {
+     let realT = total(p);
+     baseTotal = Math.max(100, Math.round((realT || 1000) * (0.65 + Math.random() * 0.7)));
+     baseTotal = Math.max(baseTotal, arr.length);
+   }
+
+   let currentSum = arr.reduce((s,x)=>s+(Number(x.votes)||0),0);
+   let vals = [];
+   if(currentSum > 0){
+     vals = arr.map(x => Math.max(1, Math.floor(baseTotal * (Number(x.votes)||0) / currentSum)));
+   } else {
+     let weights = arr.map(()=>0.35+Math.random()*1.65), sum=weights.reduce((a,b)=>a+b,0);
+     vals = weights.map(w=>Math.max(1,Math.floor(baseTotal*w/sum)));
+   }
+   let diff = baseTotal - vals.reduce((a,b)=>a+b,0);
+   while(diff > 0){ vals[Math.floor(Math.random()*vals.length)]++; diff--; }
+   while(diff < 0){ let idx=Math.floor(Math.random()*vals.length); if(vals[idx]>1){vals[idx]--; diff++;} }
+   arr.forEach((x,i)=>displayVotes[x.id]=vals[i]);
+   arr.sort((a,b)=>displayVotes[b.id]-displayVotes[a.id]);
+ }else{
+   arr.sort((a,b)=>b.votes-a.votes);arr.forEach(x=>displayVotes[x.id]=Number(x.votes)||0);
+ }
+
+ let startCounts={};arr.forEach(x=>startCounts[x.id]=0);
+ let info=resultInfo(p),frame=0,durationMs=7500,startTime=0,lastDraw=0,lastReorder=0;
+ const targetFrameMs=1000/20;
+ function easeOut(t){return 1-Math.pow(1-t,3)}
+ function formatPct(n,t){return t?((n/t)*100).toFixed(2).replace('.',',')+'%':'0,00%'}
+ function draw(timestamp){
+  try {
+  if(!startTime)startTime=timestamp;
+  if(timestamp-lastDraw<targetFrameMs){requestAnimationFrame(draw);return;}
+  lastDraw=timestamp;
+  let q=Math.min(1,(timestamp-startTime)/durationMs),w=720,h=c.height,progress=q*q*(3-2*q);
+  ctx.fillStyle='#101521';ctx.fillRect(0,0,w,h);
+  if(videoBgImage){ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,Number(videoBgData.opacity??1)));drawImageCover(ctx,videoBgImage,0,0,w,h,Number(videoBgData.x??50),Number(videoBgData.y??50),Number(videoBgData.zoom)||1);ctx.restore();}
+  ctx.fillStyle='rgba(5,7,12,.52)';ctx.fillRect(0,0,w,h);
+  ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='900 28px Arial';ctx.fillText((p.brandName||'MEU REALITY').toUpperCase().slice(0,28),w/2,48);
+  ctx.font='900 36px Arial';ctx.fillText(kind==='partial'?'PARCIAL':'RESULTADO',w/2,91);
+  ctx.font='700 14px Arial';ctx.fillStyle='#d5d8e5';ctx.fillText(kind==='partial'?'SIMULAÇÃO • NÚMEROS FICTÍCIOS':p.title,w/2,119);
+  ctx.font='700 12px Arial';ctx.fillStyle='#aeb5c8';ctx.fillText(kind==='partial'?p.title:(p.description||''),w/2,139);
+
+  const frameCounts={};let currentShownTotal=0;
+  arr.forEach(item=>{frameCounts[item.id]=Math.max(0,Math.round(startCounts[item.id]+(displayVotes[item.id]-startCounts[item.id])*progress));currentShownTotal+=frameCounts[item.id];});
+  currentShownTotal=Math.max(0,currentShownTotal);
+  if(kind==='partial'&&(timestamp-lastReorder>=1150||lastReorder===0)){
+    arr.sort((a,b)=>frameCounts[b.id]-frameCounts[a.id]);lastReorder=timestamp;
+  }
+  const cols=Math.max(1,Math.min(4,arr.length)),rows=Math.ceil(arr.length/cols),gap=10,left=24,top=158;
+  const bottomSpace=62,availableH=h-top-bottomSpace-gap*(rows-1);
+  const ch=Math.max(76,Math.min(180,availableH/rows));
+  const cw=(w-left*2-gap*(cols-1))/cols;
+  arr.forEach((x,i)=>{
+   const row=Math.floor(i/cols),rowStart=row*cols,rowCount=Math.min(cols,arr.length-rowStart);
+   const rowWidth=rowCount*cw+(rowCount-1)*gap;
+   const rowLeft=(w-rowWidth)/2;
+   const col=i-rowStart,xx=rowLeft+col*(cw+gap),yy=top+row*(ch+gap);
+   const out=kind==='final'&&info.isEliminated(x),partialOut=x.partialStatus==='out',partialStay=x.partialStatus==='stay';
+   const color=kind==='partial'?(partialOut?p.outColor:partialStay?p.stayColor:'#39445b'):(out?p.outColor:p.stayColor);
+   const compact=ch<120,photoH=Math.max(28,Math.min(compact?ch*.36:ch*.43,cw*.62));
+   const nameY=yy+photoH+(compact?15:21),pctY=nameY+(compact?17:24),votesY=pctY+(compact?14:18);
+   ctx.save();
+   const sinceSwap=kind==='partial'?Math.max(0,timestamp-lastReorder):9999;
+   const pulse=sinceSwap<180?1+Math.sin((sinceSwap/180)*Math.PI)*.025:1;
+   const drawW=cw*pulse,drawH=ch*pulse,drawX=xx-(drawW-cw)/2,drawY=yy-(drawH-ch)/2;
+   roundRect(ctx,drawX,drawY,drawW,drawH,10);ctx.fillStyle='rgba(9,12,20,.96)';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=color;ctx.stroke();
+   ctx.fillStyle=color;roundRect(ctx,drawX,drawY,drawW,6,3);ctx.fill();
+   if(imgs[x.id])drawImageCover(ctx,imgs[x.id],xx+4,yy+8,cw-8,photoH,x.cropX,x.cropY,x.zoom);
+   else{ctx.fillStyle='#fff';ctx.font='24px Arial';ctx.textAlign='center';ctx.fillText('👤',xx+cw/2,yy+photoH/2+17);}
+   ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font=`900 ${Math.max(9,Math.min(compact?12:15,cw/8))}px Arial`;ctx.fillText(x.name.slice(0,18),xx+cw/2,nameY);
+   if(kind==='partial'){
+    ctx.beginPath();ctx.arc(xx+cw-15,yy+17,6,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+    ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,255,255,.8)';ctx.stroke();
+   }
+   const shown=frameCounts[x.id];ctx.font=`950 ${Math.max(10,Math.min(compact?15:20,cw/6))}px Arial`;ctx.fillText(formatPct(shown,currentShownTotal),xx+cw/2,pctY);
+   ctx.font=`700 ${Math.max(8,Math.min(compact?9:12,cw/10))}px Arial`;ctx.fillText(fmtVideo(shown)+' votos',xx+cw/2,votesY);
+   if(kind==='final'&&ch>100){ctx.font=`900 ${Math.max(8,Math.min(11,cw/11))}px Arial`;ctx.fillStyle=color;ctx.fillText(out?(p.outLabel||'ELIMINADO'):(p.stayLabel||'SALVO'),xx+cw/2,yy+ch-8);}
+   if(kind==='partial'&&(partialOut||partialStay)&&ch>100){ctx.font=`900 ${Math.max(7,Math.min(10,cw/12))}px Arial`;ctx.fillStyle=color;ctx.fillText(partialOut?(p.partialOutLabel||'CHANCE DE SAIR'):(p.partialStayLabel||'CHANCE DE FICAR'),xx+cw/2,yy+ch-7);}
+   ctx.restore();
+  });
+
+  let totalShown=Math.round(currentShownTotal);
+  ctx.fillStyle='#fff';ctx.font='900 22px Arial';ctx.textAlign='center';ctx.fillText(fmtVideo(totalShown)+' votos',w/2,h-48);
+
+  if(kind==='final'&&q>.82){
+   let reveal=easeOut(Math.min(1,(q-.82)/.18));ctx.save();ctx.globalAlpha=reveal;
+   ctx.fillStyle='#fff';ctx.font='950 24px Arial';ctx.fillText((p.outLabel||'ELIMINADO').toUpperCase()+': '+info.eliminated.map(x=>x.name).join(', ').slice(0,45),w/2,h-15);ctx.restore();
+  }
+  frame++;if(q<1){requestAnimationFrame(draw)}else{
+   try{if(rec.state==='recording')rec.requestData();setTimeout(()=>{try{if(rec.state!=='inactive')rec.stop()}catch(e){}},250)}catch(e){if(rec.state!=='inactive')rec.stop()}
+  }
+  } catch(e) {
+   drawingFailed=true;console.error('Erro ao desenhar a animação do vídeo:',e);
+   $('videoStatus').textContent='Erro ao desenhar o vídeo. A gravação foi interrompida.';
+   try{if(rec&&rec.state!=='inactive')rec.stop();}catch(stopError){console.error(stopError);}
+  }
+ }
+ requestAnimationFrame(draw)
+}
+
+async function boot(){
+ // Mostra a interface imediatamente; se for link público, busca a votação online após conectar.
+ const publicMatch=location.hash.match(/^#vote=([^&]+)$/);
+ if(publicMatch){publicPage(decodeURIComponent(publicMatch[1]));}
+ else {renderPollList();}
+ const status=document.getElementById("cloudStatus");
+ if(status)status.textContent="conectando à nuvem…";
+ try{
+   const connected=await initCloud();
+   if(connected && publicMatch) await publicPage(decodeURIComponent(publicMatch[1]));
+ }catch(error){
+   console.error("Falha ao iniciar a nuvem:",error);
+   const el=document.getElementById("cloudStatus");
+   if(el)el.textContent="modo local • "+(error.code||error.message||"nuvem indisponível");
+ }
+}
+window.addEventListener('storage',()=>{db=loadDB();if(currentId)renderManage()});
+window.addEventListener('beforeunload',saveDB);
+boot();
+</script>
+</body>
+</html>
